@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make scene *)",
+      "Bash(/home/melo/tools/blender-3.6/3.6/python/bin/python3.10 -c ' *)",
+      "Bash(pip3 show *)",
+      "Bash(/home/melo/tools/blender-3.6/3.6/python/bin/python3.10 -m pip install \"mitsuba==3.5.0\" --quiet)",
+      "Bash(/home/melo/tools/blender-3.6/3.6/python/bin/python3.10 *)",
+      "Bash(make test *)",
+      "Bash(make all *)",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git add *)"
+    ]
+  }
+}

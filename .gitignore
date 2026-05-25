@@ -1,0 +1,15 @@
+# Ambiente Python
+venv/
+
+# Dados e artefatos gerados
+osm_data/
+output/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Arquivos temporários
+*.tmp
+*.log
