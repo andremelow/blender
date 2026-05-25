@@ -10,7 +10,7 @@
 
 # ─── Variáveis configuráveis ──────────────────────────────────────────────────
 BLENDER_BIN   ?= $(HOME)/tools/blender-3.6/blender
-BLOSM_ZIP     ?= $(HOME)/Downloads/blosm.zip
+BLOSM_ZIP     ?= $(CURDIR)/blosm.zip
 MITSUBA_ZIP   ?= $(CURDIR)/addons/mitsuba-blender.zip
 VENV_DIR      ?= $(CURDIR)/venv
 VENV_PYTHON    = $(VENV_DIR)/bin/python
