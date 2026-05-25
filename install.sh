@@ -126,6 +126,19 @@ download_mitsuba_addon() {
     fi
 
     download "$release_url" "$MITSUBA_ZIP"
+
+    # O zip do GitHub usa "mitsuba-blender/" (hífen); Python precisa de underscore.
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+    unzip -q "$MITSUBA_ZIP" -d "$tmp_dir"
+    if [ -d "$tmp_dir/mitsuba-blender" ] && [ ! -d "$tmp_dir/mitsuba_blender" ]; then
+        mv "$tmp_dir/mitsuba-blender" "$tmp_dir/mitsuba_blender"
+        rm "$MITSUBA_ZIP"
+        (cd "$tmp_dir" && zip -qr "$OLDPWD/$MITSUBA_ZIP" mitsuba_blender)
+        info "mitsuba-blender.zip reempacotado com nome de módulo correto."
+    fi
+    rm -rf "$tmp_dir"
+
     ok "mitsuba-blender salvo em: $MITSUBA_ZIP"
 }
 
@@ -177,8 +190,7 @@ write_env_file() {
 # Gerado por install.sh — editável manualmente
 BLENDER_BIN=${BLENDER_DIR}/blender
 MITSUBA_ZIP=${PWD}/${MITSUBA_ZIP}
-# Preencha com o caminho real do zip do Blosm (baixado do Gumroad):
-BLOSM_ZIP=${BLOSM_ZIP:-/PREENCHA/O/CAMINHO/DO/blosm.zip}
+BLOSM_ZIP=${BLOSM_ZIP:-${PWD}/blosm.zip}
 VENV_DIR=${PWD}/${VENV_DIR}
 EOF
     ok "Arquivo .env criado — verifique BLOSM_ZIP se ainda não preencheu."
