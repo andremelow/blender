@@ -14,7 +14,11 @@
       "Bash(gh repo *)",
       "Bash(make clean *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(gh auth *)",
+      "Bash(make clean-all *)",
+      "Bash(unzip -l addons/mitsuba-blender.zip)",
+      "Bash(grep -v \"^Archive\\\\|^--\\\\|files$\")"
     ]
   }
 }
