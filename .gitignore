@@ -3,7 +3,14 @@ venv/
 
 # Dados e artefatos gerados
 osm_data/
-output/
+output/*.npz
+output/*.mat
+output/*.pkl
+output/*.xml
+output/*.log
+output/*.txt
+output/meshes/
+output/blender_scene.png
 
 # Cache Python
 __pycache__/
