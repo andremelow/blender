@@ -43,7 +43,8 @@
       "Bash(make plot-meas *)",
       "Bash(make simulate-full *)",
       "Bash(tee /tmp/simulate_full_out.txt)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(~/tools/blender-3.6/blender --background --python scripts/blender_render_scene.py)"
     ]
   }
 }

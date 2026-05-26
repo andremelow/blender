@@ -60,10 +60,10 @@ simulate: check-venv
 	@echo "=== Simulação (--limit 100) ==="
 	"$(VENV_PYTHON)" scripts/simulate_ues.py --limit 100
 
-## simulate-full: Simula todos os UEs válidos do grid
+## simulate-full: Simula todos os 1681 pontos do grid (ignora filtro de cobertura)
 simulate-full: check-venv
-	@echo "=== Simulação completa ==="
-	"$(VENV_PYTHON)" scripts/simulate_ues.py
+	@echo "=== Simulação completa (1681 UEs) ==="
+	"$(VENV_PYTHON)" scripts/simulate_ues.py --all
 
 ## plot-meas: Gera plots de diagnóstico em output/measurements_diag.png
 plot-meas: check-venv

@@ -63,6 +63,8 @@ parser.add_argument("--limit", type=int, default=None,
                     help="Máximo de UEs (None = todos os válidos)")
 parser.add_argument("--resume", action="store_true",
                     help="Retoma do checkpoint existente (pula UEs já simulados)")
+parser.add_argument("--all", action="store_true",
+                    help="Simula todos os 1681 pontos do grid, ignorando o filtro de cobertura")
 args = parser.parse_args()
 
 os.makedirs("output", exist_ok=True)
@@ -93,14 +95,17 @@ grid = np.load(NPZ_GRID)
 all_pos   = grid["positions"]   # (N_total, 3) ENU
 all_valid = grid["valid_mask"]  # (N_total,) bool
 
-valid_pos = all_pos[all_valid]  # (N_valid, 3)
-n_valid   = len(valid_pos)
-
-if args.limit is not None and args.limit < n_valid:
-    valid_pos = valid_pos[:args.limit]
-    info(f"Limite ativado: simulando {len(valid_pos)}/{n_valid} UEs válidos.")
+if args.all:
+    valid_pos = all_pos          # todos os 1681 pontos
+    info(f"Modo --all: simulando todos os {len(valid_pos)} pontos do grid (ignora filtro de cobertura).")
 else:
-    info(f"Simulando todos os {n_valid} UEs válidos.")
+    valid_pos = all_pos[all_valid]  # (N_valid, 3)
+    n_valid   = len(valid_pos)
+    if args.limit is not None and args.limit < n_valid:
+        valid_pos = valid_pos[:args.limit]
+        info(f"Limite ativado: simulando {len(valid_pos)}/{n_valid} UEs válidos.")
+    else:
+        info(f"Simulando todos os {n_valid} UEs válidos.")
 
 n_ues = len(valid_pos)
 
@@ -194,19 +199,23 @@ for i, pos_ue in enumerate(tqdm(valid_pos, desc="UEs", unit="UE", dynamic_ncols=
             inter = np.array(paths.interactions)  # (max_depth, 1, 1, num_paths)
             inter_dom = inter[:, 0, 0, dom_idx]   # (max_depth,) — tipo em cada salto
 
-            if np.all(inter_dom == InteractionType.NONE):
+            # Classifica pelo CONJUNTO de hops (não pelo primeiro hop isolado).
+            # Hierarquia: LoS > diffracted > reflected > transmitted > none
+            # SPECULAR→REFRACTION é "reflected" (SPECULAR presente no conjunto).
+            # REFRACTION puro (travessia de parede, modo O2I) → "transmitted".
+            inter_set = set(inter_dom.tolist())
+            inter_set.discard(int(InteractionType.NONE))  # remove padding NONE dos hops vazios
+            if not inter_set:
                 path_type[i] = 'LoS'
-            elif np.any(inter_dom == InteractionType.DIFFRACTION):
+            elif int(InteractionType.DIFFRACTION) in inter_set:
                 path_type[i] = 'diffracted'
-            elif np.any(inter_dom == InteractionType.SPECULAR):
+            elif (int(InteractionType.SPECULAR) in inter_set or
+                  int(InteractionType.DIFFUSE)  in inter_set):
                 path_type[i] = 'reflected'
-            elif np.any(inter_dom == InteractionType.REFRACTION):
-                path_type[i] = 'refracted'
-            elif np.any(inter_dom == InteractionType.DIFFUSE):
-                path_type[i] = 'diffuse'
+            elif int(InteractionType.REFRACTION) in inter_set:
+                path_type[i] = 'transmitted'  # refração pura = travessia de parede (O2I)
             else:
-                # fallback: imprime valores para diagnóstico futuro
-                path_type[i] = 'unknown'
+                path_type[i] = 'none'
 
     except Exception as exc:
         warn(f"UE {i} pos={pos_ue.tolist()}: PathSolver falhou — {exc}")
@@ -238,7 +247,7 @@ ok(f"Loop concluído: {n_ues} UEs em {t_total:.1f} s ({t_total/max(n_ues,1):.2f}
 
 # ─── Resumo de tipos ──────────────────────────────────────────────────────────
 ptype_str = np.array([str(t) for t in path_type])
-for t in ['LoS', 'reflected', 'refracted', 'diffracted', 'diffuse', 'none', 'unknown']:
+for t in ['LoS', 'reflected', 'transmitted', 'diffracted', 'none']:
     cnt = int((ptype_str == t).sum())
     if cnt > 0:
         ok(f"  {t:<12s}: {cnt:4d} UEs ({100*cnt/n_ues:.1f}%)")
