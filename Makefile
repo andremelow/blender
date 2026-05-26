@@ -25,10 +25,29 @@ MAX_LON ?= -46.6954
 OUTPUT_XML ?= $(CURDIR)/output/interlagos.xml
 
 # ─── Targets ──────────────────────────────────────────────────────────────────
-.PHONY: all install setup scene test clean check-blender check-venv
+.PHONY: all install setup scene test clean check-blender check-venv \
+        inspect gnb smoke-gnb all-gnb
 
 ## all: Executa install → setup → scene → test em sequência
 all: install setup scene test
+
+## inspect: Inspeciona geometria e materiais da cena exportada
+inspect: check-venv
+	@echo "=== Inspeção da cena ==="
+	"$(VENV_PYTHON)" scripts/inspect_scene.py
+
+## gnb: Converte GPS da gNB para ENU e salva output/gnb_config.pkl
+gnb: check-venv
+	@echo "=== Posicionamento da gNB ==="
+	"$(VENV_PYTHON)" scripts/place_gnb.py
+
+## smoke-gnb: PathSolver + RadioMap com a gNB; salva PNGs em output/
+smoke-gnb: check-venv
+	@echo "=== Smoke test gNB ==="
+	"$(VENV_PYTHON)" scripts/smoke_test_gnb.py
+
+## all-gnb: inspect → gnb → smoke-gnb em sequência
+all-gnb: inspect gnb smoke-gnb
 
 ## install: Baixa Blender 3.6 LTS, mitsuba-blender e cria o venv Python
 install:
