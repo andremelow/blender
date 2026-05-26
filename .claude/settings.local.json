@@ -18,7 +18,32 @@
       "Bash(gh auth *)",
       "Bash(make clean-all *)",
       "Bash(unzip -l addons/mitsuba-blender.zip)",
-      "Bash(grep -v \"^Archive\\\\|^--\\\\|files$\")"
+      "Bash(grep -v \"^Archive\\\\|^--\\\\|files$\")",
+      "Bash(DISPLAY=:1 /home/melo/tools/blender-3.6/blender -P /mnt/stg/tls/blender/build_scene.py -- -23.7064 -23.6974 -46.7064 -46.6954)",
+      "Bash(echo \"PID Blender: $!\")",
+      "Bash(venv/bin/python *)",
+      "Bash(make smoke-gnb *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(make all-gnb *)",
+      "Read(//tmp/**)",
+      "Bash(DISPLAY=:1 venv/bin/python scripts/preview_3d.py)",
+      "Bash(tee /tmp/preview_out.txt)",
+      "Bash(venv/bin/pip show *)",
+      "Bash(DISPLAY=:1 venv/bin/jupyter lab --no-browser --port=8888 --ip=0.0.0.0 --NotebookApp.token= --NotebookApp.password= --ServerApp.token= --ServerApp.password= --ServerApp.allow_origin=* --ServerApp.disable_check_xsrf=True)",
+      "Bash(echo \"PID=$!\")",
+      "Bash(awk '{print $1}')",
+      "Bash(venv/bin/pip list *)",
+      "Bash(venv/bin/pip install *)",
+      "Bash(python3 -c \"import sionna.rt as rt; print\\(rt.__file__\\)\")",
+      "Bash(make ue-grid *)",
+      "Bash(tee /tmp/ue_grid_out.txt)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(make simulate *)",
+      "Bash(tee /tmp/simulate_out.txt)",
+      "Bash(make plot-meas *)",
+      "Bash(make simulate-full *)",
+      "Bash(tee /tmp/simulate_full_out.txt)",
+      "Bash(python3 *)"
     ]
   }
 }

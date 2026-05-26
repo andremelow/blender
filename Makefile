@@ -26,7 +26,8 @@ OUTPUT_XML ?= $(CURDIR)/output/interlagos.xml
 
 # ─── Targets ──────────────────────────────────────────────────────────────────
 .PHONY: all install setup scene test clean check-blender check-venv \
-        inspect gnb smoke-gnb all-gnb
+        inspect gnb smoke-gnb all-gnb \
+        ue-grid simulate simulate-full plot-meas
 
 ## all: Executa install → setup → scene → test em sequência
 all: install setup scene test
@@ -48,6 +49,26 @@ smoke-gnb: check-venv
 
 ## all-gnb: inspect → gnb → smoke-gnb em sequência
 all-gnb: inspect gnb smoke-gnb
+
+## ue-grid: Gera grade de UEs filtrada pelo RadioMap (output/ue_grid.npz)
+ue-grid: check-venv
+	@echo "=== Grade de UEs ==="
+	"$(VENV_PYTHON)" scripts/generate_ue_grid.py
+
+## simulate: Simula os primeiros 100 UEs válidos (validação rápida)
+simulate: check-venv
+	@echo "=== Simulação (--limit 100) ==="
+	"$(VENV_PYTHON)" scripts/simulate_ues.py --limit 100
+
+## simulate-full: Simula todos os UEs válidos do grid
+simulate-full: check-venv
+	@echo "=== Simulação completa ==="
+	"$(VENV_PYTHON)" scripts/simulate_ues.py
+
+## plot-meas: Gera plots de diagnóstico em output/measurements_diag.png
+plot-meas: check-venv
+	@echo "=== Plots de diagnóstico ==="
+	"$(VENV_PYTHON)" scripts/plot_measurements.py
 
 ## install: Baixa Blender 3.6 LTS, mitsuba-blender e cria o venv Python
 install:

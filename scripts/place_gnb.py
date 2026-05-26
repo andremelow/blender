@@ -31,7 +31,9 @@ LAT0     = -23.7019   # latitude da origem da cena
 LON0     = -46.7009   # longitude da origem da cena
 LAT_GNB  = -23.701926
 LON_GNB  = -46.700974
-H_GNB    = 25.0       # altura do mastro (m)
+# Torre trelicada autoportante, seção triangular 3 pernas, sobre prédio 2 pavimentos (~8.5 m).
+# Balizamento ANAC diurno (branco/laranja). Altura confirmada pelo operador.
+H_GNB    = 62.0       # altura total AGL (prédio + torre); confirmada
 R_EARTH  = 6_378_137  # raio médio da Terra (m)
 
 # Array UPA 8×8 dual-pol, spacing 0.5λ, padrão 3GPP TR 38.901
