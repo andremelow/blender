@@ -1,0 +1,58 @@
+# interlagos_baseline.yaml — Cenário de referência: Interlagos 3.5 GHz
+# Reproduz exatamente os parâmetros de generate_ue_grid.py + simulate_ues.py.
+#
+# Uso:
+#   python -m generators.generate scenarios/interlagos_baseline.yaml
+#   python -m generators.generate scenarios/interlagos_baseline.yaml --dry-run
+
+scenario:
+  name: interlagos_baseline
+  scene_xml: output/interlagos.xml
+
+gnb:
+  lat: -23.701926              # latitude WGS-84 da gNB
+  lon: -46.700974              # longitude WGS-84 da gNB
+  scene_origin_lat: -23.7019   # origem da cena (centro da exportação Blender)
+  scene_origin_lon: -46.7009
+  height_m: 62.0               # torre trelicada sobre prédio 2-pav. (confirmado)
+  orientation_deg: [0.0, 0.0, 0.0]
+
+  array:
+    rows: 8
+    cols: 8
+    spacing_factor: 0.5        # λ/2
+    pattern: tr38901
+    polarization: VH
+
+  power_dbm: 23.0103           # 200 mW = 10*log10(200) dBm (P_TX_W=0.2 em simulate_ues.py)
+  frequency_hz: 3.5e9          # NR band n78
+  bandwidth_hz: 100.0e6        # 100 MHz
+
+ues:
+  mode: grid
+  height_m: 1.5                # UE a 1.5 m do solo
+
+  grid:
+    east_min:  -400.0          # ENU absoluto relativo à origem da cena (metros)
+    east_max:   400.0
+    east_step:   20.0          # 41 pontos → 41×41 = 1681 UEs
+    north_min: -400.0
+    north_max:  400.0
+    north_step:  20.0
+
+  coverage_threshold_db: -140.0  # limiar path_gain para filtro de cobertura
+
+simulation:
+  max_depth: 3
+  los: true
+  specular_reflection: true
+  diffraction: true
+  diffuse_reflection: false
+  batch_size: 0                # 0 = sem batching (modo UE-por-UE como original)
+  random_seed: 42
+  rsrp_threshold_dbm: -120.0
+
+output:
+  measurements_npz: output/measurements_v2.npz
+  mat_file: output/measurements_rt.mat
+  figures_dir: output/

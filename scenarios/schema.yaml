@@ -1,0 +1,58 @@
+# schema.yaml — Documentação do esquema YAML para cenários Sionna RT.
+# Este arquivo é referência; não é usado diretamente pelo código.
+#
+# Validação implementada em generators/config.py (dataclass + validação manual).
+
+scenario:
+  name: string                 # identificador único do cenário
+  scene_xml: path              # caminho para o XML Mitsuba exportado pelo Blender
+
+gnb:
+  lat: float                   # latitude WGS-84  ∈ [-90, 90]
+  lon: float                   # longitude WGS-84 ∈ [-180, 180]
+  scene_origin_lat: float      # lat da origem da cena (flat-Earth anchor)
+  scene_origin_lon: float      # lon da origem da cena
+  height_m: float              # altura AGL em metros (> 0)
+  orientation_deg: [α, β, γ]  # orientação Euler ZYX em graus
+
+  array:
+    rows: int                  # linhas da UPA (≥ 1)
+    cols: int                  # colunas da UPA (≥ 1)
+    spacing_factor: float      # espaçamento em frações de λ (> 0)
+    pattern: string            # "tr38901" | "iso" | "dipole" | ...
+    polarization: string       # "VH" | "V" | "H" | "cross" | ...
+
+  power_dbm: float             # potência de TX em dBm (aviso se ∉ [0, 50])
+  frequency_hz: float          # frequência central em Hz (> 0)
+  bandwidth_hz: float          # largura de banda em Hz (> 0)
+
+ues:
+  mode: string                 # "grid" | "list" | "clusters"
+  height_m: float              # altura dos UEs em metros (> 0)
+
+  # — Modo "grid" (obrigatório quando mode == "grid") —
+  grid:
+    east_min: float            # limite oeste em metros (ENU absoluto da cena)
+    east_max: float            # limite leste  (east_max > east_min)
+    east_step: float           # passo em metros (> 0)
+    north_min: float           # limite sul
+    north_max: float           # limite norte (north_max > north_min)
+    north_step: float          # passo em metros (> 0)
+
+  coverage_threshold_db: float # limiar de path_gain para filtro de cobertura (dB)
+                               # padrão: -140.0
+
+simulation:
+  max_depth: int               # profundidade máxima de ray-tracing ∈ [1, 10]
+  los: bool                    # incluir raios LoS
+  specular_reflection: bool    # incluir reflexão especular
+  diffraction: bool            # incluir difração (knife-edge)
+  diffuse_reflection: bool     # incluir reflexão difusa (lento)
+  batch_size: int              # tamanho do batch (0 = UE-por-UE)  (≥ 0)
+  random_seed: int             # semente para reprodutibilidade
+  rsrp_threshold_dbm: float    # RSRP mínimo reportado (dBm)
+
+output:
+  measurements_npz: path       # caminho de saída do NPZ principal
+  mat_file: path               # (opcional) caminho do .mat para MATLAB
+  figures_dir: path            # (opcional) diretório para figuras de diagnóstico

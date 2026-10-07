@@ -1,0 +1,52 @@
+# interlagos_f1.yaml — Espectadores do Grande Prêmio de F1 (Interlagos)
+# 10 000 UEs posicionados nas arquibancadas do Autódromo José Carlos Pace.
+#
+# Pré-requisito:
+#   python scripts/generate_spectator_ues.py   → output/ue_spectators.npz
+#
+# Uso:
+#   python -m generators.generate scenarios/interlagos_f1.yaml
+#   python -m generators.generate scenarios/interlagos_f1.yaml --dry-run
+
+scenario:
+  name: interlagos_f1_spectators
+  scene_xml: output/interlagos.xml
+
+gnb:
+  lat: -23.701926
+  lon: -46.700974
+  scene_origin_lat: -23.7019
+  scene_origin_lon: -46.7009
+  height_m: 62.0
+  orientation_deg: [0.0, 0.0, 0.0]
+
+  array:
+    rows: 8
+    cols: 8
+    spacing_factor: 0.5
+    pattern: tr38901
+    polarization: VH
+
+  power_dbm: 23.0103           # 200 mW = 10*log10(200) dBm
+  frequency_hz: 3.5e9
+  bandwidth_hz: 100.0e6
+
+ues:
+  mode: precomputed
+  height_m: 1.5                # altura padrão (posições reais vêm do NPZ)
+  precomputed_npz: output/ue_spectators.npz   # gerado por generate_spectator_ues.py
+
+simulation:
+  max_depth: 3
+  los: true
+  specular_reflection: true
+  diffraction: true
+  diffuse_reflection: false
+  batch_size: 0
+  random_seed: 42
+  rsrp_threshold_dbm: -120.0
+
+output:
+  measurements_npz: output/measurements_spectators.npz
+  mat_file: output/measurements_spectators.mat
+  figures_dir: output/

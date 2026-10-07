@@ -15,11 +15,13 @@ MITSUBA_ZIP   ?= $(CURDIR)/addons/mitsuba-blender.zip
 VENV_DIR      ?= $(CURDIR)/venv
 VENV_PYTHON    = $(VENV_DIR)/bin/python
 
-# Bounding box padrão — Interlagos, SP
-MIN_LAT ?= -23.7064
-MAX_LAT ?= -23.6974
-MIN_LON ?= -46.7064
-MAX_LON ?= -46.6954
+# Bounding box — Interlagos, SP  (raio 1200 m a partir da origem da cena)
+# Origem: lat=-23.7019  lon=-46.7009
+# 1200 m / 111 319 m/deg ≈ 0.010779°  |  1200 m / 101 982 m/deg ≈ 0.011767°
+MIN_LAT ?= -23.7127
+MAX_LAT ?= -23.6911
+MIN_LON ?= -46.7127
+MAX_LON ?= -46.6891
 
 # Arquivo de saída
 OUTPUT_XML ?= $(CURDIR)/output/interlagos.xml
